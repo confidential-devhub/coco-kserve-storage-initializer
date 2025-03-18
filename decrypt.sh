@@ -13,24 +13,23 @@ echo "#######################################"
 echo ""
 
 # variables provided via ClusterStorageContainer
-MODEL_ENCRYPTED=${MODEL_ENCRYPTED:-true} # wether to decrypt the model or not
-MODEL_DECRYPTION_KEY=${MODEL_DECRYPTION_KEY:-"kbsres1/key1"} # path to the secret/file in Trustee
+MODEL_ENCRYPTED=${MODEL_ENCRYPTED:-false} # whether to decrypt the model or not
+MODEL_DECRYPTION_KEY=${MODEL_DECRYPTION_KEY:-"model-keys/model-name.key"} # path to the secret/file in Trustee
 MODEL_NAME=${MODEL_NAME:-"model"} # name of the model, without format
 MODEL_FORMAT=${MODEL_FORMAT:-"onnx"} # format of the model
 
-echo "SRC $SRC"
-echo "DEST $DEST"
+if ! $MODEL_ENCRYPTED 2> /dev/null; then
+    exit 0
+fi
+
 echo "MODEL_ENCRYPTED: $MODEL_ENCRYPTED"
 echo "MODEL_DECRYPTION_KEY: $MODEL_DECRYPTION_KEY"
 echo "MODEL_NAME: $MODEL_NAME"
 echo "MODEL_FORMAT: $MODEL_FORMAT"
 echo ""
 
-if ! $MODEL_ENCRYPTED 2> /dev/null; then
-    exit 0
-fi
-
-KEY_FOLDER=keys
+KEY_FOLDER=/tmp/keys # save key in memory-backed fs
+mkdir $KEY_FOLDER
 KEY_FILE=$KEY_FOLDER/key.bin
 
 MODEL_PATH_DIR=$DEST
@@ -55,7 +54,6 @@ echo "Model found in $MODEL_FILE!"
 MODEL_FILE_ENC=$MODEL_FILE.enc
 echo ""
 
-
 echo "MODEL_FILE_ENC $MODEL_FILE_ENC"
 echo ""
 
@@ -70,8 +68,7 @@ ls -R $KEY_FOLDER
 echo ""
 
 echo "Downloading the key:"
-# curl -L http://127.0.0.1:8006/cdh/resource/default/$MODEL_DECRYPTION_KEY -o $KEY_FILE
-curl -L https://people.redhat.com/eesposit/key.bin -o $KEY_FILE # TODO:
+curl -L http://127.0.0.1:8006/cdh/resource/default/$MODEL_DECRYPTION_KEY -o $KEY_FILE
 echo ""
 
 echo "Content of $KEY_FOLDER:"
