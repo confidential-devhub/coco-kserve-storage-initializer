@@ -14,7 +14,7 @@ echo ""
 
 # variables provided via ClusterStorageContainer
 MODEL_ENCRYPTED=${MODEL_ENCRYPTED:-true} # wether to decrypt the model or not
-MODEL_DECRYPTION_KEY=${MODEL_DECRYPTION_KEY:-"fraud-detection/key.bin"} # path to the secret/file in Trustee
+MODEL_DECRYPTION_KEY=${MODEL_DECRYPTION_KEY:-"kbsres1/key1"} # path to the secret/file in Trustee
 MODEL_NAME=${MODEL_NAME:-"model"} # name of the model, without format
 MODEL_FORMAT=${MODEL_FORMAT:-"onnx"} # format of the model
 
